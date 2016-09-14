@@ -3,5 +3,5 @@ CMakeListsPrivate.txt
 .clang_complete
 .gcc-flags.json
 .piolibdeps
-.idea
+.idea/
 .directory
