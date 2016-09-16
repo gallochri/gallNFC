@@ -21,8 +21,8 @@ GND     = GND
 #define RST_PIN	15 // RST-PIN für RC522 - RFID - SPI - Modul GPIO15
 #define SS_PIN	2  // SDA-PIN für RC522 - RFID - SPI - Modul GPIO2
 
-const char *ssid =	"yourSSID";	    // change according to your Network - cannot be longer than 32 characters!
-const char *pass =	"yourPASSWORD";	// change according to your Network
+//const char *ssid =	"yourSSID";	    // change according to your Network - cannot be longer than 32 characters!
+//const char *pass =	"yourPASSWORD";	// change according to your Network
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);	// Create MFRC522 instance
 
@@ -35,14 +35,14 @@ void dump_byte_array(byte *buffer, byte bufferSize) {
 }
 
 void setup() {
-    Serial.begin(9600);    // Initialize serial communications
+    Serial.begin(115200);    // Initialize serial communications
     delay(250);
     Serial.println(F("Booting...."));
 
     SPI.begin();	         // Init SPI bus
     mfrc522.PCD_Init();    // Init MFRC522
 
-    WiFi.begin(ssid, pass);
+/*    WiFi.begin(ssid, pass);
 
     int retries = 0;
     while ((WiFi.status() != WL_CONNECTED) && (retries < 10)) {
@@ -53,7 +53,7 @@ void setup() {
     if (WiFi.status() == WL_CONNECTED) {
         Serial.println(F("WiFi connected"));
     }
-
+*/
     Serial.println(F("Ready!"));
     Serial.println(F("======================================================"));
     Serial.println(F("Scan for Card and print UID:"));
