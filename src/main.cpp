@@ -9,16 +9,16 @@ Many thanks to nikxha from the ESP8266 forum
 #include <MFRC522.h>
 
 /* wiring the MFRC522 to ESP8266 (ESP-12)
-RST     = GPIO15
-SDA(SS) = GPIO2
-MOSI    = GPIO13
-MISO    = GPIO12
-SCK     = GPIO14
+RST     = GPIO5     D1
+SDA(SS) = GPIO2     D4
+MOSI    = GPIO13    D7
+MISO    = GPIO12    D6
+SCK     = GPIO14    D5
 GND     = GND
 3.3V    = 3.3V
 */
 
-#define RST_PIN	15 // RST-PIN für RC522 - RFID - SPI - Modul GPIO15
+#define RST_PIN	5 // RST-PIN für RC522 - RFID - SPI - Modul GPIO15
 #define SS_PIN	2  // SDA-PIN für RC522 - RFID - SPI - Modul GPIO2
 
 //const char *ssid =	"yourSSID";	    // change according to your Network - cannot be longer than 32 characters!
