@@ -1,7 +1,8 @@
 .pioenvs
-CMakeListsPrivate.txt
 .clang_complete
 .gcc-flags.json
+CMakeListsPrivate.txt
 .piolibdeps
 .idea/
 .directory
+src/keys.h

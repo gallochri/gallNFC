@@ -4,27 +4,10 @@
 Many thanks to nikxha from the ESP8266 forum
 */
 
-#include <ESP8266WiFi.h>
 #include <SPI.h>
 #include <MFRC522.h>
 
-/* wiring the MFRC522 to ESP8266 (ESP-12)
-RST     = GPIO5     D1
-SDA(SS) = GPIO2     D4
-MOSI    = GPIO13    D7
-MISO    = GPIO12    D6
-SCK     = GPIO14    D5
-GND     = GND
-3.3V    = 3.3V
-*/
-
-#define RST_PIN	5 // RST-PIN für RC522 - RFID - SPI - Modul GPIO15
-#define SS_PIN	2  // SDA-PIN für RC522 - RFID - SPI - Modul GPIO2
-
-//const char *ssid =	"yourSSID";	    // change according to your Network - cannot be longer than 32 characters!
-//const char *pass =	"yourPASSWORD";	// change according to your Network
-
-MFRC522 mfrc522(SS_PIN, RST_PIN);	// Create MFRC522 instance
+#include "config.h"
 
 // Helper routine to dump a byte array as hex values to Serial
 void dump_byte_array(byte *buffer, byte bufferSize) {
@@ -35,28 +18,30 @@ void dump_byte_array(byte *buffer, byte bufferSize) {
 }
 
 void setup() {
-    Serial.begin(115200);    // Initialize serial communications
+    Serial.begin(115200);
     delay(250);
     Serial.println(F("Booting...."));
-
-    SPI.begin();	         // Init SPI bus
-    mfrc522.PCD_Init();    // Init MFRC522
-
-/*    WiFi.begin(ssid, pass);
-
-    int retries = 0;
-    while ((WiFi.status() != WL_CONNECTED) && (retries < 10)) {
-        retries++;
-        delay(500);
-        Serial.print(".");
+    SPI.begin();
+    mfrc522.PCD_Init();
+    for (int i = 0; i < 6; i++) {
+        keyA9.keyByte[i] = key1[i];
     }
-    if (WiFi.status() == WL_CONNECTED) {
-        Serial.println(F("WiFi connected"));
+    for (int i = 0; i < 6; i++) {
+        keyA10.keyByte[i] = key2[i];
     }
-*/
-    Serial.println(F("Ready!"));
-    Serial.println(F("======================================================"));
-    Serial.println(F("Scan for Card and print UID:"));
+    for (int i = 0; i < 6; i++) {
+        keyA11_12.keyByte[i] = key3[i];
+    }
+    Serial.println(F("Scan a MIFARE Classic PICC to demonstrate Value Block mode."));
+    Serial.print(F("Using key (for A) in sector 9:"));
+    dump_byte_array(keyA9.keyByte, MFRC522::MF_KEY_SIZE);
+    Serial.println();
+    Serial.print(F("Using key (for A) in sector 10:"));
+    dump_byte_array(keyA10.keyByte, MFRC522::MF_KEY_SIZE);
+    Serial.println();
+    Serial.print(F("Using key (for A) in sector 11 and 12:"));
+    dump_byte_array(keyA11_12.keyByte, MFRC522::MF_KEY_SIZE);
+    Serial.println();
 }
 
 void loop() {
@@ -73,6 +58,40 @@ void loop() {
     // Show some details of the PICC (that is: the tag/card)
     Serial.print(F("Card UID:"));
     dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size);
+    Serial.println();
+    Serial.print(F("PICC type: "));
+    MFRC522::PICC_Type piccType = mfrc522.PICC_GetType(mfrc522.uid.sak);
+    Serial.println(mfrc522.PICC_GetTypeName(piccType));
+
+    // Check for compatibility
+    if (    piccType != MFRC522::PICC_TYPE_MIFARE_MINI
+            &&  piccType != MFRC522::PICC_TYPE_MIFARE_1K
+            &&  piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
+        Serial.println(F("This sample only works with MIFARE Classic cards."));
+        return;
+    }
+    byte sector         = 9;
+    byte valueBlockA    = 0;
+    byte valueBlockB    = 1;
+    byte valueBlockC    = 2;
+    byte trailerBlock   = 3;
+    MFRC522::StatusCode status;
+    byte buffer[18];
+    byte size = sizeof(buffer);
+    long value;
+
+    // Authenticate using key A
+    Serial.println(F("Authenticating using key A..."));
+    status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, trailerBlock, &keyA9, &(mfrc522.uid));
+    if (status != MFRC522::STATUS_OK) {
+        Serial.print(F("PCD_Authenticate() failed: "));
+        Serial.println(mfrc522.GetStatusCodeName(status));
+        return;
+    }
+
+    // Show the whole sector as it currently is
+    Serial.println(F("Current data in sector:"));
+    mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyA9, sector);
     Serial.println();
 }
 
