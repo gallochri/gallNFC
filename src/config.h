@@ -23,8 +23,19 @@ GND     =   GND
 #define RST_PIN 5
 #define SS_PIN 2
 MFRC522 mfrc522(SS_PIN, RST_PIN);
-MFRC522::MIFARE_Key keyA9;
-MFRC522::MIFARE_Key keyA10;
-MFRC522::MIFARE_Key keyA11_12;
+
+MFRC522::MIFARE_Key keyA;
+byte sectorA = 9;
+byte trailerBlockA = 39;
+
+MFRC522::MIFARE_Key keyB;
+byte sectorB = 10;
+
+byte trailerBlockB = 43;
+MFRC522::MIFARE_Key keyC;
+byte sectorC = 11;
+byte trailerBlockC = 47;
+byte sectorD = 12;
+byte trailerBlockD = 51;
 
 #endif //GALLNFC_CONFIG_H

@@ -24,23 +24,23 @@ void setup() {
     SPI.begin();
     mfrc522.PCD_Init();
     for (int i = 0; i < 6; i++) {
-        keyA9.keyByte[i] = key1[i];
+        keyA.keyByte[i] = key1[i];
     }
     for (int i = 0; i < 6; i++) {
-        keyA10.keyByte[i] = key2[i];
+        keyB.keyByte[i] = key2[i];
     }
     for (int i = 0; i < 6; i++) {
-        keyA11_12.keyByte[i] = key3[i];
+        keyC.keyByte[i] = key3[i];
     }
     Serial.println(F("Scan a MIFARE Classic PICC to demonstrate Value Block mode."));
     Serial.print(F("Using key (for A) in sector 9:"));
-    dump_byte_array(keyA9.keyByte, MFRC522::MF_KEY_SIZE);
+    dump_byte_array(keyA.keyByte, MFRC522::MF_KEY_SIZE);
     Serial.println();
     Serial.print(F("Using key (for A) in sector 10:"));
-    dump_byte_array(keyA10.keyByte, MFRC522::MF_KEY_SIZE);
+    dump_byte_array(keyB.keyByte, MFRC522::MF_KEY_SIZE);
     Serial.println();
     Serial.print(F("Using key (for A) in sector 11 and 12:"));
-    dump_byte_array(keyA11_12.keyByte, MFRC522::MF_KEY_SIZE);
+    dump_byte_array(keyC.keyByte, MFRC522::MF_KEY_SIZE);
     Serial.println();
 }
 
@@ -70,19 +70,12 @@ void loop() {
         Serial.println(F("This sample only works with MIFARE Classic cards."));
         return;
     }
-    byte sector         = 9;
-    byte valueBlockA    = 0;
-    byte valueBlockB    = 1;
-    byte valueBlockC    = 2;
-    byte trailerBlock   = 3;
+
     MFRC522::StatusCode status;
-    byte buffer[18];
-    byte size = sizeof(buffer);
-    long value;
 
     // Authenticate using key A
     Serial.println(F("Authenticating using key A..."));
-    status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, trailerBlock, &keyA9, &(mfrc522.uid));
+    status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, trailerBlockA, &keyA, &(mfrc522.uid));
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("PCD_Authenticate() failed: "));
         Serial.println(mfrc522.GetStatusCodeName(status));
@@ -91,7 +84,28 @@ void loop() {
 
     // Show the whole sector as it currently is
     Serial.println(F("Current data in sector:"));
-    mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyA9, sector);
+    mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyA, sectorA);
     Serial.println();
+
+    // Show the whole sector as it currently is
+    Serial.println(F("Current data in sector:"));
+    mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyB, sectorB);
+    Serial.println();
+
+    // Show the whole sector as it currently is
+    Serial.println(F("Current data in sector:"));
+    mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyC, sectorC);
+    Serial.println();
+
+    // Show the whole sector as it currently is
+    Serial.println(F("Current data in sector:"));
+    mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyC, sectorD);
+    Serial.println();
+
+    // Halt PICC
+    mfrc522.PICC_HaltA();
+    // Stop encryption on PCD
+    mfrc522.PCD_StopCrypto1();
+
 }
 
