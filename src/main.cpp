@@ -18,11 +18,16 @@ void dump_byte_array(byte *buffer, byte bufferSize) {
 }
 
 void setup() {
+    //Init Serial port
     Serial.begin(115200);
-    delay(250);
-    Serial.println(F("Booting...."));
+    //Init RGB LED
+    led.begin();
+    led.show();
+    blinkLed.violet(&led, 250, 2);
+    //Init SPI and PCD
     SPI.begin();
     mfrc522.PCD_Init();
+    //Reading keys
     for (int i = 0; i < 6; i++) {
         keyA.keyByte[i] = key1[i];
     }
@@ -32,6 +37,7 @@ void setup() {
     for (int i = 0; i < 6; i++) {
         keyC.keyByte[i] = key3[i];
     }
+    /*
     Serial.println(F("Scan a MIFARE Classic PICC to demonstrate Value Block mode."));
     Serial.print(F("Using key (for A) in sector 9:"));
     dump_byte_array(keyA.keyByte, MFRC522::MF_KEY_SIZE);
@@ -42,6 +48,7 @@ void setup() {
     Serial.print(F("Using key (for A) in sector 11 and 12:"));
     dump_byte_array(keyC.keyByte, MFRC522::MF_KEY_SIZE);
     Serial.println();
+    */
 }
 
 void loop() {
@@ -55,6 +62,7 @@ void loop() {
         delay(50);
         return;
     }
+
     // Show some details of the PICC (that is: the tag/card)
     Serial.print(F("Card UID:"));
     dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size);
@@ -67,7 +75,8 @@ void loop() {
     if (    piccType != MFRC522::PICC_TYPE_MIFARE_MINI
             &&  piccType != MFRC522::PICC_TYPE_MIFARE_1K
             &&  piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
-        Serial.println(F("This sample only works with MIFARE Classic cards."));
+        Serial.println(F("This reader works with MIFARE Classic cards only."));
+        blinkLed.red(&led, 50, 3);
         return;
     }
 
@@ -79,6 +88,7 @@ void loop() {
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("PCD_Authenticate() failed: "));
         Serial.println(mfrc522.GetStatusCodeName(status));
+        blinkLed.red(&led, 50, 3);
         return;
     }
 
@@ -106,6 +116,6 @@ void loop() {
     mfrc522.PICC_HaltA();
     // Stop encryption on PCD
     mfrc522.PCD_StopCrypto1();
-
+    blinkLed.green(&led, 50, 3);
 }
 
