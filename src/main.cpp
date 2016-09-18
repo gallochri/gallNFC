@@ -1,5 +1,6 @@
 #include <Arduino.h>
-
+#include <ESP8266WiFi.h>
+#include <FS.h>
 #include <SPI.h>
 #include <MFRC522.h>
 
@@ -7,19 +8,38 @@
 #include "utils.h"
 
 void setup() {
+    //Set WiFi to station mode
+    WiFi.mode(WIFI_STA);
     //Init Serial port
     Serial.begin(115200);
+    //Init SPI and PCD
+    SPI.begin();
+    SPIFFS.begin();
+    mfrc522.PCD_Init();
     //Init RGB LED
     led.begin();
     led.show();
-    blinkLed.violet(&led, 250, 2);
-    //Init SPI and PCD
-    SPI.begin();
-    mfrc522.PCD_Init();
+    blinkLed.blue(&led, 50, 3);
+    //DEBUG
+    //printKeys(key1,key2,key3);
+
+    //Try to load saved config
+    if (!loadWiFiSavedConfig()) {
+        Serial.println("WARNING: WiFi configuration not found");
+        blinkLed.red(&led, 50, 3);
+//        setupMode();
+        return;
+    }
+
+    //Check connection
+    if (!checkWiFiConnection()) {
+        Serial.println("ERROR: Connection lost");
+        blinkLed.red(&led, 50, 3);
+//        setupMode();
+        return;
+    }
     //System ready!
     Serial.println("System ready:");
-    //DEBUG
-    printKeys(key1,key2,key3);
 }
 
 void loop() {
