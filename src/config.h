@@ -15,11 +15,13 @@ SCK     =   GPIO14      D5
 
 */
 
-#ifndef GALLNFC_CONFIG_H
-#define GALLNFC_CONFIG_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
+#include <ESP8266WebServer.h>
+#include <DNSServer.h>
 #include <MFRC522.h>
 #include <ColorBlink.h>
 
@@ -35,6 +37,18 @@ SCK     =   GPIO14      D5
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, RGB_PIN, NEO_GRB + NEO_KHZ800);
 ColorBlink blinkLed = ColorBlink();
+ESP8266WebServer WEB_SERVER(80);
+DNSServer DNS_SERVER;
+
+//Global vars
+unsigned long startTime;
+#define TIMEOUT (240*1000)  //Setupmode timeout in milliseconds
+boolean setupModeStatus = false;
+IPAddress AP_IP(192, 168, 5, 1);
+String CHIP_ID = String(ESP.getChipId());
+String DEVICE_TITLE = "AIRBUTTON";
+String AP_SSID = "**" + DEVICE_TITLE + "-" + CHIP_ID + "**";
+String SSID_LIST;
 
 MFRC522::MIFARE_Key keyA;
 byte sectorA = 9;
@@ -50,4 +64,4 @@ byte trailerBlockC = 47;
 byte sectorD = 12;
 byte trailerBlockD = 51;
 
-#endif //GALLNFC_CONFIG_H
+#endif //CONFIG_H
