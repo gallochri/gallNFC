@@ -215,6 +215,7 @@ void debugSPIFFS() {
         String fileName = dir.fileName();
         Serial.printf("FS File: %s\n", fileName.c_str());
     }
+}
 
 
 // Helper routine to dump a byte array as hex values to Serial
