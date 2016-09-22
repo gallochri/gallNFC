@@ -119,7 +119,7 @@ void loop() {
 
         Serial.println(F("TEST:"));
         byte block = 36;
-        mfrc522.PICC_DumpMifareClassicBlockToSerial(&(mfrc522.uid), (MFRC522::MIFARE_Key *) &key1, sectorA, block);
+        PICC_DumpMifareClassicBlockToSerial(mfrc522, &(mfrc522.uid), (MFRC522::MIFARE_Key *) &key1, sectorA, block);
         Serial.println();
 
         // Halt PICC

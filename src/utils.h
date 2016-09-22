@@ -11,6 +11,7 @@
 
 extern Adafruit_NeoPixel led;
 extern ColorBlink blinkLed;
+extern MFRC522 mfrc522;
 
 // Load WiFi configuration
 boolean loadWiFiSavedConfig();
@@ -45,5 +46,7 @@ void dump_byte_array(byte *buffer, byte bufferSize);
 void printKeys(byte key1[MFRC522::MF_KEY_SIZE],
                byte key2[MFRC522::MF_KEY_SIZE],
                byte key3[MFRC522::MF_KEY_SIZE]);
+
+void PICC_DumpMifareClassicBlockToSerial(MFRC522 mfrc522, MFRC522::Uid *uid, MFRC522::MIFARE_Key *key, byte sector, byte block);
 
 #endif //UTILS_H
