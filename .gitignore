@@ -6,3 +6,4 @@ CMakeListsPrivate.txt
 .idea/
 .directory
 src/keys.h
+examples/.directory
