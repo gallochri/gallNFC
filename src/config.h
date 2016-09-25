@@ -56,12 +56,15 @@ byte trailerBlockA = 39;
 
 MFRC522::MIFARE_Key keyB;
 byte sectorB = 10;
-
 byte trailerBlockB = 43;
+
 MFRC522::MIFARE_Key keyC;
 byte sectorC = 11;
 byte trailerBlockC = 47;
 byte sectorD = 12;
 byte trailerBlockD = 51;
+
+//Block to send
+byte block = 36;
 
 #endif //CONFIG_H
