@@ -48,7 +48,7 @@ void handleWiFi() {
     s += SSID_LIST;
     s += "\n</select>\n";
     s += "<br><label>or</label>\n<input name='dssid' maxlength='32' placeholder='SSID'/>\n";
-    s += "<br><br><label>Password: </label>\n<input name='pass' maxlength='64' type='password' placeholder='password'>\n";
+    s += "<br><br><label>Password: </label>\n<input name='pass' maxlength='64' placeholder='WiFi password'>\n";
     s += "<br><br><input type='submit' value='Submit'>\n</form>";
     WEB_SERVER.send(200, "text/html", makePage(DEVICE_TITLE, "Wi-Fi Settings", s));
 }

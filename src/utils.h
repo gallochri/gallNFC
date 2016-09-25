@@ -12,6 +12,14 @@
 extern Adafruit_NeoPixel led;
 extern ColorBlink blinkLed;
 extern MFRC522 mfrc522;
+extern byte trailerBlockA;
+extern byte key1[6];
+extern byte key2[6];
+extern byte key3[6];
+extern byte sectorA;
+extern byte sectorB;
+extern byte sectorC;
+extern byte sectorD;
 
 // Load WiFi configuration
 boolean loadWiFiSavedConfig();
@@ -47,6 +55,18 @@ void printKeys(byte key1[MFRC522::MF_KEY_SIZE],
                byte key2[MFRC522::MF_KEY_SIZE],
                byte key3[MFRC522::MF_KEY_SIZE]);
 
-void PICC_DumpMifareClassicBlockToSerial(MFRC522 mfrc522, MFRC522::Uid *uid, MFRC522::MIFARE_Key *key, byte sector, byte block);
+void PICC_DumpMifareClassicBlockToSerial(MFRC522 mfrc522,
+                                         MFRC522::Uid *uid,
+                                         MFRC522::MIFARE_Key *key,
+                                         byte sector, byte block);
+
+String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,
+                                           MFRC522::Uid *uid,
+                                           MFRC522::MIFARE_Key *key,
+                                           byte sector,
+                                           byte block);
+
+//DEBUG Show some details of the PICC (that is: the tag/card)
+void PICCdetails();
 
 #endif //UTILS_H
