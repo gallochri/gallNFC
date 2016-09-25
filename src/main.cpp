@@ -69,9 +69,12 @@ void loop() {
         //DEBUG
         //PICCdetails();
 
+
         Serial.print(F("Block:"));
-        PICC_DumpMifareClassicBlockToString(mfrc522, &(mfrc522.uid), (MFRC522::MIFARE_Key *) &key1, sectorA, block);
+        String dataTosend = PICC_DumpMifareClassicBlockToString(mfrc522, &(mfrc522.uid), (MFRC522::MIFARE_Key *) &key1, sectorA, block);
         Serial.println();
+
+        customurl(dataTosend);
 
         // Halt PICC
         mfrc522.PICC_HaltA();

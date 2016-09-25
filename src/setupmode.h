@@ -11,6 +11,7 @@
 #include <ESP8266mDNS.h>
 #include "utils.h"
 #include "webserver.h"
+#include "customurl.h"
 
 extern boolean setupModeStatus;
 extern IPAddress AP_IP;

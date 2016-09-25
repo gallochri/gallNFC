@@ -1,17 +1,16 @@
 #include "webserver.h"
 
 void handleNotFound() {
-    String iftt_status;
-    if (loadJsonParam("ifttt")) {
-        iftt_status = "checked";
+    String custom_status;
+    if (loadJsonParam("custom")) {
+        custom_status = "checked";
     }
-
     String s = "<h2>Configuration Mode</h2>\n";
     s += "<p><a href='wifi.html'>WiFi</a></p>\n";
     s += "<form method='get' action='reboot.html'>\n";
     s += "<fieldset>\n<legend>Select services that you want to enable.</legend>\n<br>\n";
-    s += "<p><input type='checkbox' name='ifttt' value='1' title='IFTTT'" + iftt_status +
-         "/>&nbsp;&nbsp;&nbsp;<a href='ifttt.html'>IFTTT</a></p>\n";
+    s += "<p><input type='checkbox' name='custom' value='1' title='customurl' " + custom_status +
+         "/>&nbsp;&nbsp;&nbsp;<a href='customurl.html'>Custom URL</a></p>\n";
     s += "<p><input type='submit' value='Submit' /></p>\n";
     s += "</fieldset>\n</form>\n";
     WEB_SERVER.send(200, "text/html", makePage(DEVICE_TITLE, "Configuration mode", s));
@@ -26,11 +25,11 @@ void handleReboot() {
     }
     String s = "<h2>Summary</h2>\n";
     s += "<p>Services enabled: <p>\n";
-    String ifttt = urlDecode(WEB_SERVER.arg("ifttt"));
-    boolean ifttt_status = ifttt.equals("1");
-    saveJsonConfig("ifttt", "enabled", ifttt_status);
-    if (ifttt_status) {
-        s += "<p><b>IFTTT</b></p>\n";
+    String custom = urlDecode(WEB_SERVER.arg("custom"));
+    boolean custom_status = custom.equals("1");
+    saveJsonConfig("custom", "enabled", custom_status);
+    if (custom_status) {
+        s += "<p><b>Custom URL</b></p>\n";
     }
     s +="<form method='get' action='reboot.html'>\n";
     s +="<input type='submit' name='reboot' value='Reboot Now!'>\n";
