@@ -24,62 +24,66 @@ void setup() {
     //DEBUG
     //printKeys(key1,key2,key3);
 
-    //Try to load saved config
     if (!loadWiFiSavedConfig()) {
         Serial.println("WARNING: WiFi configuration not found");
         blinkLed.red(&led, 50, 3);
-        setupMode();
-        return;
-    }
-
-    //Check connection
-    if (!checkWiFiConnection()) {
+        isOnline = (boolean) false;
+    } else if (!checkWiFiConnection()) {
         Serial.println("ERROR: Connection lost");
         blinkLed.red(&led, 50, 3);
-        setupMode();
-        return;
+        isOnline = (boolean) false;
     }
+
     //System ready!
-    Serial.println("System ready:");
+    if (isOnline) {
+        Serial.println("System online.");
+        Serial.println("Ready to scan:");
+    } else {
+        Serial.println("System offline.");
+        Serial.println("Waiting master card to configure.");
+        setupMode();
+    }
+
 }
 
 void loop() {
-    if (setupModeStatus) {
-        DNS_SERVER.processNextRequest();
-        WEB_SERVER.handleClient();
-        blinkLed.violet(&led, 0, 10);
-        if ((millis() - startTime) > TIMEOUT) {
-            Serial.println("Set up mode timed out.");
-            Serial.println("WARNING: APixel Board power off");
-            delay(1000);
-        }
-    } else {
+    // Look for new cards
+    if (!mfrc522.PICC_IsNewCardPresent()) {
+        delay(50);
+        return;
+    }
+    // Select one of the cards
+    if (!mfrc522.PICC_ReadCardSerial()) {
+        delay(50);
+        return;
+    }
 
-        // Look for new cards
-        if (!mfrc522.PICC_IsNewCardPresent()) {
-            delay(50);
-            return;
-        }
-        // Select one of the cards
-        if (!mfrc522.PICC_ReadCardSerial()) {
-            delay(50);
-            return;
-        }
+    //DEBUG
+    //PICCdetails();
 
-        //DEBUG
-        //PICCdetails();
-
-
+    if (isOnline) {
         Serial.print(F("Block:"));
-        String dataTosend = PICC_DumpMifareClassicBlockToString(mfrc522, &(mfrc522.uid), (MFRC522::MIFARE_Key *) &key1, sectorA, block);
+        String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
+                                                                &(mfrc522.uid),
+                                                                (MFRC522::MIFARE_Key *) &key1,
+                                                                sectorA, block);
         Serial.println();
-
-        customurl(dataTosend);
-
+        customurl(dataToSend);
         // Halt PICC
         mfrc522.PICC_HaltA();
         // Stop encryption on PCD
         mfrc522.PCD_StopCrypto1();
-        blinkLed.green(&led, 50, 3);
+    } else {
+        Serial.print("OK");
+        DNS_SERVER.processNextRequest();
+        WEB_SERVER.handleClient();
+        blinkLed.violet(&led, 0, 1);
+        if ((millis() - startTime) > TIMEOUT) {
+            Serial.println("Set up mode timed out.");
+            delay(1000);
+        }
     }
+
+
 }
+
