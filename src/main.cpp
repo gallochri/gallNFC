@@ -71,12 +71,11 @@ void loop() {
 
         Serial.print(F("Block:"));
         PICC_DumpMifareClassicBlockToString(mfrc522, &(mfrc522.uid), (MFRC522::MIFARE_Key *) &key1, sectorA, block);
-        Serial.println();
+        Serial.println("ok");
 
         // Halt PICC
         mfrc522.PICC_HaltA();
         // Stop encryption on PCD
         mfrc522.PCD_StopCrypto1();
-        blinkLed.green(&led, 50, 3);
     }
 }

@@ -2,5 +2,10 @@
   "wifi": {
     "ssid": "",
     "password": ""
+  },
+  "custom": {
+    "enabled": 0,
+    "host": "",
+    "url": ""
   }
 }

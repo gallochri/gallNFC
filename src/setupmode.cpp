@@ -33,10 +33,10 @@ void setupMode() {
 
     // Settings Page
     WEB_SERVER.on("/wifi.html", handleWiFi);
-//    WEB_SERVER.on("/ifttt.html", handleIFTTT);
+    WEB_SERVER.on("/customurl.html", handleCustomURL);
 
     WEB_SERVER.on("/setwifi.html", handleSetWiFi);
-//    WEB_SERVER.on("/setifttt.html", handleSetIFTTT);
+    WEB_SERVER.on("/setcustomurl.html", handleSetCustomURL);
 
     WEB_SERVER.on("/reboot.html", handleReboot);
     WEB_SERVER.serveStatic("/css/basic.css",SPIFFS,"/css/basic.css");

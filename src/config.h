@@ -2,15 +2,13 @@
 Wiring the MFRC522 to ESP8266
             ESP12-e     Wemos-D1 mini
 
-RST     =   GPIO5       D1
 RGB_LED =   GPIO4       D2
+RST     =   GPIO5       D1
 SDA(SS) =   GPIO2       D4
 
-SCK     =   GPIO14      D5
-MISO    =   GPIO12      D6
 MOSI    =   GPIO13      D7
-
-
+MISO    =   GPIO12      D6
+SCK     =   GPIO14      D5
 
  GND     =   GND         GND
 3.3V    =   3.3V        3.3V

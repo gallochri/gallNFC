@@ -280,6 +280,7 @@ void PICC_DumpMifareClassicBlockToSerial(MFRC522 mfrc522,MFRC522::Uid *uid, MFRC
         if (status != MFRC522::STATUS_OK) {
             Serial.print(F("PCD_Authenticate() failed: "));
             Serial.println(mfrc522.GetStatusCodeName(status));
+            blinkLed.red(&led, 50, 3);
             return;
         }
     }
@@ -343,6 +344,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
     }
     else {
         Serial.print(F("ERROR: Illegal input, no MIFARE Classic PICC has more than 40 sectors."));
+        blinkLed.red(&led, 50, 3);
         return errorString;
     }
 
@@ -350,6 +352,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
 
     if (block < firstBlock | block > lastBlock){
         Serial.println(F("ERROR Block out of sector"));
+        blinkLed.red(&led, 50, 3);
         return errorString;
     }
 
@@ -365,6 +368,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
         if (status != MFRC522::STATUS_OK) {
             Serial.print(F("PCD_Authenticate() failed: "));
             Serial.println(mfrc522.GetStatusCodeName(status));
+            blinkLed.red(&led, 50, 3);
             return errorString;
         }
     }
@@ -375,9 +379,11 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("MIFARE_Read() failed: "));
         Serial.println(mfrc522.GetStatusCodeName(status));
+        blinkLed.red(&led, 50, 3);
     }
 
     for (byte index = 0; index < 16; index++) {
+        blinkLed.green(&led, 20, 1);
         if (buffer[index] < 0x10) {
             dataBlock += " 0";
         }
