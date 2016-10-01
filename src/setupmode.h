@@ -25,6 +25,7 @@ extern DNSServer DNS_SERVER;
 extern Adafruit_NeoPixel led;
 extern ColorBlink blinkLed;
 
-void setupMode();
+void setupModeStage1();
+void setupModeStage2();
 
 #endif // SETUPMODE_H
