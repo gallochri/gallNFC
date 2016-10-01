@@ -74,7 +74,7 @@ void loop() {
         // Stop encryption on PCD
         mfrc522.PCD_StopCrypto1();
     } else {
-        Serial.print("OK");
+        Serial.print("SetUpMode");
         DNS_SERVER.processNextRequest();
         WEB_SERVER.handleClient();
         blinkLed.violet(&led, 0, 1);
@@ -83,7 +83,5 @@ void loop() {
             delay(1000);
         }
     }
-
-
 }
 

@@ -51,6 +51,7 @@ String DEVICE_TITLE = "AIRBUTTON";
 String AP_SSID = "**" + DEVICE_TITLE + "-" + CHIP_ID + "**";
 String SSID_LIST;
 
+//card configuration
 MFRC522::MIFARE_Key keyA;
 byte sectorA = 9;
 byte trailerBlockA = 39;
