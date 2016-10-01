@@ -61,7 +61,7 @@ void handleCustomURL() {
     s += "<form method='get' action='setcustomurl.html'>\n";
     s += "<label>Host: <input value='";
     s += custom_host;
-    s += "' placeholder='Es.: requestb.in' name='HOST' maxlenght='200'></label><br>\n";
+    s += "' name='HOST' maxlenght='200'></label><br>\n";
     s += "<label>Custom URL: <input value='";
     s += custom_url;
     s += "' name='URL' maxlenght='200'></label><br>\n";

@@ -1,23 +1,23 @@
 #include "setupmode.h"
 
-void setupMode() {
+void setupModeStage1() {
     Serial.println("Setup mode started");
     setupModeStatus = (boolean) true;
 
     //WiFI start in client mode
-    blinkLed.violet(&led, 100, 1);
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
     delay(200);
 
     //Write SSID_LIST in html
-    blinkLed.violet(&led, 100, 1);
     Serial.println("Scan WiFi networks");
     SSID_LIST = ssidList();
     delay(100);
 
-    //WiFi start in access point mode
-    blinkLed.violet(&led, 100, 1);
+    blinkLed.violet(&led, 100, 3);
+}
+
+void setupModeStage2() {
     WiFi.mode(WIFI_AP);
     WiFi.softAPConfig(AP_IP, AP_IP, IPAddress(255, 255, 255, 0));
     WiFi.softAP(AP_SSID.c_str());
@@ -47,4 +47,5 @@ void setupMode() {
     WEB_SERVER.begin();
     MDNS.addService("http", "tcp", 80);
     startTime = millis();
+    setupModeStatus = (boolean) false;
 }

@@ -344,7 +344,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
     }
     else {
         Serial.print(F("ERROR: Illegal input, no MIFARE Classic PICC has more than 40 sectors."));
-        blinkLed.red(&led, 50, 3);
+        blinkLed.red(&led, 50, 5);
         return errorString;
     }
 
@@ -352,7 +352,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
 
     if (block < firstBlock | block > lastBlock){
         Serial.println(F("ERROR Block out of sector"));
-        blinkLed.red(&led, 50, 3);
+        blinkLed.red(&led, 50, 5);
         return errorString;
     }
 
@@ -360,15 +360,12 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
     byte buffer[18];
     isSectorTrailer = true;
 
-    Serial.print(block);
-    Serial.print(F("  "));
-
     if (isSectorTrailer) {
         status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, firstBlock, key, uid);
         if (status != MFRC522::STATUS_OK) {
             Serial.print(F("PCD_Authenticate() failed: "));
             Serial.println(mfrc522.GetStatusCodeName(status));
-            blinkLed.red(&led, 50, 3);
+            blinkLed.red(&led, 50, 5);
             return errorString;
         }
     }
@@ -379,11 +376,11 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("MIFARE_Read() failed: "));
         Serial.println(mfrc522.GetStatusCodeName(status));
-        blinkLed.red(&led, 50, 3);
+        blinkLed.red(&led, 50, 5);
+        return errorString;
     }
 
     for (byte index = 0; index < 16; index++) {
-        blinkLed.green(&led, 20, 1);
         if (buffer[index] < 0x10) {
             dataBlock += " 0";
         }
@@ -395,8 +392,8 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
             dataBlock += (" ");
         }
     }
-    printf(dataBlock.c_str());
 
+    blinkLed.green(&led, 50, 5);
     return dataBlock;
 }
 

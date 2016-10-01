@@ -44,12 +44,14 @@ DNSServer DNS_SERVER;
 unsigned long startTime;
 #define TIMEOUT (240*1000)  //Setupmode timeout in milliseconds
 boolean setupModeStatus = false;
+boolean isOnline = true;
 IPAddress AP_IP(192, 168, 5, 1);
 String CHIP_ID = String(ESP.getChipId());
 String DEVICE_TITLE = "AIRBUTTON";
 String AP_SSID = "**" + DEVICE_TITLE + "-" + CHIP_ID + "**";
 String SSID_LIST;
 
+//card configuration
 MFRC522::MIFARE_Key keyA;
 byte sectorA = 9;
 byte trailerBlockA = 39;
