@@ -2,17 +2,16 @@
 Wiring the MFRC522 to ESP8266
             ESP12-e     Wemos-D1 mini
 
-RGB_LED =   GPIO4       D2
+GND     =   GND         GND
 RST     =   GPIO5       D1
+RGB_LED1=   GPIO4       D2
 SDA(SS) =   GPIO2       D4
 
-MOSI    =   GPIO13      D7
-MISO    =   GPIO12      D6
+3.3V    =   3.3V        3V3
 SCK     =   GPIO14      D5
-
- GND     =   GND         GND
-3.3V    =   3.3V        3.3V
-
+MISO    =   GPIO12      D6
+MOSI    =   GPIO13      D7
+RGB_LED2=   GPIO15      D8
 */
 
 #ifndef CONFIG_H
@@ -31,11 +30,12 @@ SCK     =   GPIO14      D5
 //PIN definitions
 #define RST_PIN 5
 #define SS_PIN 2
-#define RGB_PIN 4
+#define RGB_PIN1 4
+#define RGB_PIN2 15
 
 //Global objects
 MFRC522 mfrc522(SS_PIN, RST_PIN);
-Adafruit_NeoPixel led = Adafruit_NeoPixel(1, RGB_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel led = Adafruit_NeoPixel(1, RGB_PIN1, NEO_GRB + NEO_KHZ800);
 ColorBlink blinkLed = ColorBlink();
 ESP8266WebServer WEB_SERVER(80);
 DNSServer DNS_SERVER;
@@ -47,7 +47,7 @@ boolean setupModeStatus = false;
 boolean isOnline = true;
 IPAddress AP_IP(192, 168, 5, 1);
 String CHIP_ID = String(ESP.getChipId());
-String DEVICE_TITLE = "AIRBUTTON";
+String DEVICE_TITLE = "gallNFC";
 String AP_SSID = "**" + DEVICE_TITLE + "-" + CHIP_ID + "**";
 String SSID_LIST;
 

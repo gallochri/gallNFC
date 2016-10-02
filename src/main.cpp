@@ -40,7 +40,6 @@ void setup() {
         Serial.println("Ready to scan:");
     } else {
         Serial.println("System offline.");
-        Serial.println("Waiting master card to configure.");
         setupModeStage1();
     }
 
@@ -98,7 +97,7 @@ void loop() {
         } else {
             DNS_SERVER.processNextRequest();
             WEB_SERVER.handleClient();
-            blinkLed.violet(&led, 50, 1);
+            blinkLed.violet(&led, 100, 1);
             if ((millis() - startTime) > TIMEOUT) {
                 Serial.println("Set up mode timed out.");
                 delay(1000);

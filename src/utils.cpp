@@ -61,7 +61,7 @@ String makePage(String device_title, String page_title, String contents) {
     s += "<title>";
     s += device_title + " | " + page_title;
     s += "</title>\n</head>\n<body>\n<header>\n";
-    s += "<img src='img/logo_color_small.png' title='AIRBUTTON' alt='Airbutton Logo' align='middle'>\n";
+    s += "<img src='img/logo.png' title='gallNFC' alt='gallNFC Logo' align='middle'>\n";
     s += "</header>\n<div class=\"content-body\">\n";
     s += contents;
     s += "</div>\n</body>\n</html>";
@@ -344,7 +344,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
     }
     else {
         Serial.print(F("ERROR: Illegal input, no MIFARE Classic PICC has more than 40 sectors."));
-        blinkLed.red(&led, 50, 5);
+        blinkLed.red(&led, 50, 10);
         return errorString;
     }
 
@@ -352,7 +352,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
 
     if (block < firstBlock | block > lastBlock){
         Serial.println(F("ERROR Block out of sector"));
-        blinkLed.red(&led, 50, 5);
+        blinkLed.red(&led, 50, 10);
         return errorString;
     }
 
@@ -365,7 +365,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
         if (status != MFRC522::STATUS_OK) {
             Serial.print(F("PCD_Authenticate() failed: "));
             Serial.println(mfrc522.GetStatusCodeName(status));
-            blinkLed.red(&led, 50, 5);
+            blinkLed.red(&led, 50, 10);
             return errorString;
         }
     }
@@ -376,7 +376,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
     if (status != MFRC522::STATUS_OK) {
         Serial.print(F("MIFARE_Read() failed: "));
         Serial.println(mfrc522.GetStatusCodeName(status));
-        blinkLed.red(&led, 50, 5);
+        blinkLed.red(&led, 50, 10);
         return errorString;
     }
 
@@ -393,7 +393,7 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
         }
     }
 
-    blinkLed.green(&led, 50, 5);
+    blinkLed.green(&led, 50, 10);
     return dataBlock;
 }
 

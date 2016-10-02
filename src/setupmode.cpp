@@ -15,6 +15,8 @@ void setupModeStage1() {
     delay(100);
 
     blinkLed.violet(&led, 100, 3);
+    Serial.println("Setup mode stage 1 terminated");
+    Serial.println("Waiting master card to configure.");
 }
 
 void setupModeStage2() {
@@ -43,7 +45,7 @@ void setupModeStage2() {
     WEB_SERVER.serveStatic("/css/basic.css",SPIFFS,"/css/basic.css");
     WEB_SERVER.serveStatic("/css/custom.css",SPIFFS,"/css/custom.css");
     WEB_SERVER.serveStatic("/css/simple.css",SPIFFS,"/css/simple.css");
-    WEB_SERVER.serveStatic("/img/logo_color_small.png",SPIFFS,"/img/logo_color_small.png");
+    WEB_SERVER.serveStatic("/img/logo.png",SPIFFS,"/img/logo.png");
     WEB_SERVER.onNotFound(handleNotFound);
     WEB_SERVER.begin();
     MDNS.addService("http", "tcp", 80);
