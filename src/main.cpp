@@ -90,7 +90,6 @@ void loop() {
 
             if (dataToSend != "CARD ERROR") {
                 setupModeStage2();
-                Serial.println("Setup mode stage 2");
             }
             // Halt PICC
             mfrc522.PICC_HaltA();
@@ -103,6 +102,7 @@ void loop() {
             if ((millis() - startTime) > TIMEOUT) {
                 Serial.println("Set up mode timed out.");
                 delay(1000);
+                ESP.restart();
             }
         }
     }

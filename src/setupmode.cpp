@@ -1,7 +1,7 @@
 #include "setupmode.h"
 
 void setupModeStage1() {
-    Serial.println("Setup mode started");
+    Serial.println("Setup mode stage 1 started");
     setupModeStatus = (boolean) true;
 
     //WiFI start in client mode
@@ -18,6 +18,7 @@ void setupModeStage1() {
 }
 
 void setupModeStage2() {
+    Serial.println("Setup mode stage 2 started");
     WiFi.mode(WIFI_AP);
     WiFi.softAPConfig(AP_IP, AP_IP, IPAddress(255, 255, 255, 0));
     WiFi.softAP(AP_SSID.c_str());
