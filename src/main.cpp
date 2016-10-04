@@ -58,8 +58,8 @@ void loop() {
         }
         String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
                                                                 &(mfrc522.uid),
-                                                                (MFRC522::MIFARE_Key *) &key1,
-                                                                sectorA, block);
+                                                                (MFRC522::MIFARE_Key *) &key2,
+                                                                sectorB, block);
         Serial.println(dataToSend.c_str());
 
         if (dataToSend != "CARD ERROR") {
@@ -83,8 +83,8 @@ void loop() {
             }
             String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
                                                                     &(mfrc522.uid),
-                                                                    (MFRC522::MIFARE_Key *) &key1,
-                                                                    sectorA, block);
+                                                                    (MFRC522::MIFARE_Key *) &key2,
+                                                                    sectorB, block);
             Serial.println(dataToSend.c_str());
 
             if (dataToSend != "CARD ERROR") {
