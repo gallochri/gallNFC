@@ -67,6 +67,6 @@ byte sectorD = 12;
 byte trailerBlockD = 51;
 
 //Block to send
-byte block = 36;
+byte block = 40;
 
 #endif //CONFIG_H
