@@ -45,6 +45,7 @@ unsigned long startTime;
 #define TIMEOUT (240*1000)  //Setupmode timeout in milliseconds
 boolean setupModeStatus = false;
 boolean isOnline = true;
+boolean apmode = false;
 IPAddress AP_IP(192, 168, 5, 1);
 String CHIP_ID = String(ESP.getChipId());
 String DEVICE_TITLE = "gallNFC";

@@ -2,6 +2,7 @@
 
 boolean customurl(String blockData) {
     Serial.println("Custom URL called");
+    mfrc522.PCD_AntennaOff();
 
     String custom_host = loadJsonParam("custom", "host");
     String custom_url = loadJsonParam("custom", "url");
@@ -23,8 +24,6 @@ boolean customurl(String blockData) {
     data = "{\"macaddress\":\"" + vMac +
            "\",\"ssid\":\"" + vSid +
            "\",\"blockData\":\"" + blockData + "\"}";
-
-    blinkLed.blue(&led, 100, 1);
 
     Serial.println("======= Custom URL =======");
 
@@ -48,9 +47,9 @@ boolean customurl(String blockData) {
         }
     }
 
-    blinkLed.blue(&led, 100, 1);
-
+    blinkLed.green(&led, 100, 1);
     Serial.println("\nCustom URL request sent. Goodbye");
+    mfrc522.PCD_AntennaOn();
     return (boolean) true;
 }
 

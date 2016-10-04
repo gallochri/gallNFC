@@ -13,10 +13,8 @@ void setup() {
     WiFi.mode(WIFI_STA);
     //Init Serial port
     Serial.begin(115200);
-    //Init SPI and PCD
-    SPI.begin();
+    //Init SPIFFS
     SPIFFS.begin();
-    mfrc522.PCD_Init();
     //Init RGB LED
     led.begin();
     led.show();
@@ -34,6 +32,9 @@ void setup() {
         isOnline = (boolean) false;
     }
 
+    //Init
+    SPI.begin();
+    mfrc522.PCD_Init();
     //System ready!
     if (isOnline) {
         Serial.println("System online.");
@@ -42,11 +43,48 @@ void setup() {
         Serial.println("System offline.");
         setupModeStage1();
     }
-
 }
 
 void loop() {
+    if (apmode) {
+        DNS_SERVER.processNextRequest();
+        WEB_SERVER.handleClient();
+        blinkLed.violet(&led, 0, 10);
+        if ((millis() - startTime) > TIMEOUT) {
+            Serial.println("Set up mode timed out.");
+            delay(1000);
+            ESP.restart();
+        }
+        return;
+    }
+
     if (isOnline) {
+        if (!mfrc522.PICC_IsNewCardPresent()) {
+            delay(10);
+            return;
+        }
+        if (!mfrc522.PICC_ReadCardSerial()) {
+            delay(10);
+            return;
+        }
+        String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
+                                                                &(mfrc522.uid),
+                                                                (MFRC522::MIFARE_Key *) &key2,
+                                                                sectorB, block);
+        Serial.println(dataToSend.c_str());
+
+        if (dataToSend != "CARD ERROR") {
+            customurl(dataToSend);
+            delay(3000);
+        }
+        // Halt PICC
+        mfrc522.PICC_HaltA();
+        // Stop encryption on PCD
+        mfrc522.PCD_StopCrypto1();
+
+    }
+
+    if (setupModeStatus) {
         if (!mfrc522.PICC_IsNewCardPresent()) {
             delay(10);
             return;
@@ -63,47 +101,16 @@ void loop() {
         Serial.println(dataToSend.c_str());
 
         if (dataToSend != "CARD ERROR") {
-            customurl(dataToSend);
-        }
-        // Halt PICC
-        mfrc522.PICC_HaltA();
-        // Stop encryption on PCD
-        mfrc522.PCD_StopCrypto1();
-
-    } else {
-        if (setupModeStatus) {
-            if (!mfrc522.PICC_IsNewCardPresent()) {
-                delay(10);
-                return;
-            }
-            // Select one of the cards
-            if (!mfrc522.PICC_ReadCardSerial()) {
-                delay(10);
-                return;
-            }
-            String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
-                                                                    &(mfrc522.uid),
-                                                                    (MFRC522::MIFARE_Key *) &key2,
-                                                                    sectorB, block);
-            Serial.println(dataToSend.c_str());
-
-            if (dataToSend != "CARD ERROR") {
-                setupModeStage2();
-            }
-            // Halt PICC
             mfrc522.PICC_HaltA();
-            // Stop encryption on PCD
             mfrc522.PCD_StopCrypto1();
-        } else {
-            DNS_SERVER.processNextRequest();
-            WEB_SERVER.handleClient();
-            blinkLed.violet(&led, 100, 1);
-            if ((millis() - startTime) > TIMEOUT) {
-                Serial.println("Set up mode timed out.");
-                delay(1000);
-                ESP.restart();
-            }
+            mfrc522.PCD_AntennaOff();
+            setupModeStage2();
+            apmode = (boolean) true;
+            return;
         }
+        mfrc522.PICC_HaltA();
+        mfrc522.PCD_StopCrypto1();
     }
 }
+
 
