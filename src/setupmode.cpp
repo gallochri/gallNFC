@@ -27,7 +27,7 @@ void setupModeStage2() {
     DNS_SERVER.start(53, "*", AP_IP);
     Serial.print("Starting Access Point at ");
     Serial.println(WiFi.softAPIP());
-    if (!MDNS.begin("airbutton")) {
+    if (!MDNS.begin("gallNFC")) {
         Serial.println("Error setting up MDNS responder!");
         delay(1000);
     }
