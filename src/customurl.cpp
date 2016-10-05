@@ -48,7 +48,7 @@ boolean customurl(String blockData) {
         }
     }
 
-    blinkLed.green(&led, 100, 1);
+    blinkLed.violet(&led, 200, 3);
     Serial.println("\nCustom URL request sent. Goodbye");
     mfrc522.PCD_AntennaOn();
     return (boolean) true;

@@ -60,8 +60,10 @@ void loop() {
 
     if (setupModeStatus) {
         if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
+            // Se sono qui e' perche' non c'e' scheda
             return;
         }
+
 
         String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
                                                                 &(mfrc522.uid),
@@ -115,5 +117,3 @@ void loop() {
         mfrc522.PCD_StopCrypto1();
     }
 }
-
-
