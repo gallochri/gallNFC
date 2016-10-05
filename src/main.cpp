@@ -59,41 +59,33 @@ void loop() {
     }
 
     if (isOnline) {
-        if (!mfrc522.PICC_IsNewCardPresent()) {
-            delay(10);
+        if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
             return;
         }
-        if (!mfrc522.PICC_ReadCardSerial()) {
-            delay(10);
-            return;
-        }
+
         String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
                                                                 &(mfrc522.uid),
                                                                 (MFRC522::MIFARE_Key *) &key2,
                                                                 sectorB, block);
+        String firstID = dataToSend.substring(0,6);
+
         Serial.println(dataToSend.c_str());
+        Serial.println(firstID.c_str());
 
         if (dataToSend != "CARD ERROR") {
             customurl(dataToSend);
             delay(3000);
         }
-        // Halt PICC
+        // Halt PICC & Stop encryption on PCD
         mfrc522.PICC_HaltA();
-        // Stop encryption on PCD
         mfrc522.PCD_StopCrypto1();
-
     }
 
     if (setupModeStatus) {
-        if (!mfrc522.PICC_IsNewCardPresent()) {
-            delay(10);
+        if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
             return;
         }
-        // Select one of the cards
-        if (!mfrc522.PICC_ReadCardSerial()) {
-            delay(10);
-            return;
-        }
+
         String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
                                                                 &(mfrc522.uid),
                                                                 (MFRC522::MIFARE_Key *) &key2,
