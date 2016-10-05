@@ -58,27 +58,6 @@ void loop() {
         return;
     }
 
-    if (isOnline) {
-        if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
-            return;
-        }
-
-        String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
-                                                                &(mfrc522.uid),
-                                                                (MFRC522::MIFARE_Key *) &key2,
-                                                                sectorB, block);
-        //DEBUG
-        //Serial.println(dataToSend.c_str());
-
-        if (dataToSend != "CARD ERROR") {
-            customurl(dataToSend);
-            delay(3000);
-        }
-        // Halt PICC & Stop encryption on PCD
-        mfrc522.PICC_HaltA();
-        mfrc522.PCD_StopCrypto1();
-    }
-
     if (setupModeStatus) {
         if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
             return;
@@ -88,9 +67,12 @@ void loop() {
                                                                 &(mfrc522.uid),
                                                                 (MFRC522::MIFARE_Key *) &key2,
                                                                 sectorB, block);
-        Serial.println(dataToSend.c_str());
+        String firstID = dataToSend.substring(0,6);
 
-        if (dataToSend != "CARD ERROR") {
+        //DEBUG
+        //Serial.println(dataToSend.c_str());
+
+        if (firstID == masterID) {
             mfrc522.PICC_HaltA();
             mfrc522.PCD_StopCrypto1();
             mfrc522.PCD_AntennaOff();
@@ -98,6 +80,37 @@ void loop() {
             apmode = (boolean) true;
             return;
         }
+        mfrc522.PICC_HaltA();
+        mfrc522.PCD_StopCrypto1();
+    }
+
+    if (isOnline) {
+        if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
+            return;
+        }
+
+        String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
+                                                                &(mfrc522.uid),
+                                                                (MFRC522::MIFARE_Key *) &key2,
+                                                                sectorB, block);
+        String firstID = dataToSend.substring(0,6);
+
+        //DEBUG
+        //Serial.println(dataToSend.c_str());
+
+        if (dataToSend != "CARD ERROR") {
+            if (firstID == masterID){
+                Serial.println("********MasterID*************");
+                saveJsonConfig("wifi", "ssid", "");
+                Serial.println("*****Reboot in SetupMode*****");
+                delay(500);
+                ESP.reset();
+                return;
+            }
+            customurl(dataToSend);
+            delay(3000);
+        }
+        // Halt PICC & Stop encryption on PCD
         mfrc522.PICC_HaltA();
         mfrc522.PCD_StopCrypto1();
     }

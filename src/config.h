@@ -51,6 +51,7 @@ String CHIP_ID = String(ESP.getChipId());
 String DEVICE_TITLE = "gallNFC";
 String AP_SSID = "**" + DEVICE_TITLE + "-" + CHIP_ID + "**";
 String SSID_LIST;
+String masterID = " 44 4f";
 
 //card configuration
 MFRC522::MIFARE_Key keyA;
