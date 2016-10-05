@@ -393,7 +393,8 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,MFRC522::Uid *uid, MF
         }
     }
 
-    blinkLed.green(&led, 50, 10);
+    blinkLed.green(&led, 100, 3);
+    blinkLed.green(&led, 800, 1);
     return dataBlock;
 }
 
