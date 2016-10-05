@@ -13,6 +13,7 @@ boolean customurl(String blockData) {
     // Make sure we can connect
     if (!client.connect(custom_host.c_str(), 80)) {
         Serial.println("ERROR: Can't connect to host!");
+        mfrc522.PCD_AntennaOn();
         return (boolean) false;
     }
 
