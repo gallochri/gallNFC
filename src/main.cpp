@@ -67,10 +67,8 @@ void loop() {
                                                                 &(mfrc522.uid),
                                                                 (MFRC522::MIFARE_Key *) &key2,
                                                                 sectorB, block);
-        String firstID = dataToSend.substring(0,6);
-
-        Serial.println(dataToSend.c_str());
-        Serial.println(firstID.c_str());
+        //DEBUG
+        //Serial.println(dataToSend.c_str());
 
         if (dataToSend != "CARD ERROR") {
             customurl(dataToSend);
