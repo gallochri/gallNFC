@@ -14,9 +14,23 @@ void setupModeStage1() {
     SSID_LIST = ssidList();
     delay(100);
 
-    blinkLed.violet(&led, 100, 3);
+    // Settings Page
+    WEB_SERVER.on("/wifi.html", handleWiFi);
+    WEB_SERVER.on("/customurl.html", handleCustomURL);
+
+    WEB_SERVER.on("/setwifi.html", handleSetWiFi);
+    WEB_SERVER.on("/setcustomurl.html", handleSetCustomURL);
+
+    WEB_SERVER.on("/reboot.html", handleReboot);
+    WEB_SERVER.serveStatic("/css/basic.css",SPIFFS,"/css/basic.css");
+    WEB_SERVER.serveStatic("/css/custom.css",SPIFFS,"/css/custom.css");
+    WEB_SERVER.serveStatic("/css/simple.css",SPIFFS,"/css/simple.css");
+    WEB_SERVER.serveStatic("/img/logo.png",SPIFFS,"/img/logo.png");
+    WEB_SERVER.onNotFound(handleNotFound);
+
     Serial.println("Setup mode stage 1 terminated");
     Serial.println("Waiting master card to configure.");
+    blinkLed.violet(&led, 100, 3);
 }
 
 void setupModeStage2() {
@@ -32,23 +46,10 @@ void setupModeStage2() {
         delay(1000);
     }
     Serial.println("mDNS responder started");
-    blinkLed.violet(&led, 100, 2);
-
-    // Settings Page
-    WEB_SERVER.on("/wifi.html", handleWiFi);
-    WEB_SERVER.on("/customurl.html", handleCustomURL);
-
-    WEB_SERVER.on("/setwifi.html", handleSetWiFi);
-    WEB_SERVER.on("/setcustomurl.html", handleSetCustomURL);
-
-    WEB_SERVER.on("/reboot.html", handleReboot);
-    WEB_SERVER.serveStatic("/css/basic.css",SPIFFS,"/css/basic.css");
-    WEB_SERVER.serveStatic("/css/custom.css",SPIFFS,"/css/custom.css");
-    WEB_SERVER.serveStatic("/css/simple.css",SPIFFS,"/css/simple.css");
-    WEB_SERVER.serveStatic("/img/logo.png",SPIFFS,"/img/logo.png");
-    WEB_SERVER.onNotFound(handleNotFound);
     WEB_SERVER.begin();
     MDNS.addService("http", "tcp", 80);
     startTime = millis();
     setupModeStatus = (boolean) false;
+    Serial.println("Setup mode stage 2 terminated");
+    Serial.println("Waiting client for configure.");
 }
