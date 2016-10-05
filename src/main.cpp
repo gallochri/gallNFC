@@ -60,7 +60,6 @@ void loop() {
 
     if (setupModeStatus) {
         if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
-            // Se sono qui e' perche' non c'e' scheda
             return;
         }
 
