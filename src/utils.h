@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <FS.h>
-#include <MFRC522.h>
+#include <Adafruit_PN532.h>
 #include <ESP8266WiFi.h>
 #include <Adafruit_NeoPixel.h>
 #include <ColorBlink.h>
@@ -11,8 +11,7 @@
 
 extern Adafruit_NeoPixel led;
 extern ColorBlink blinkLed;
-extern MFRC522 mfrc522;
-extern byte trailerBlockA;
+extern Adafruit_PN532 pn532;
 extern byte key1[6];
 extern byte key2[6];
 extern byte key3[6];
@@ -51,22 +50,8 @@ void debugSPIFFS();
 void dump_byte_array(byte *buffer, byte bufferSize);
 
 //DEBUG Print keys to serial
-void printKeys(byte key1[MFRC522::MF_KEY_SIZE],
-               byte key2[MFRC522::MF_KEY_SIZE],
-               byte key3[MFRC522::MF_KEY_SIZE]);
-
-void PICC_DumpMifareClassicBlockToSerial(MFRC522 mfrc522,
-                                         MFRC522::Uid *uid,
-                                         MFRC522::MIFARE_Key *key,
-                                         byte sector, byte block);
-
-String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,
-                                           MFRC522::Uid *uid,
-                                           MFRC522::MIFARE_Key *key,
-                                           byte sector,
-                                           byte block);
-
-//DEBUG Show some details of the PICC (that is: the tag/card)
-void PICCdetails();
+void printKeys(byte key1[6],
+               byte key2[6],
+               byte key3[6]);
 
 #endif //UTILS_H

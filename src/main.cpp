@@ -1,8 +1,9 @@
 #include <Arduino.h>
+#include <Wire.h>
 #include <ESP8266WiFi.h>
 #include <FS.h>
 #include <SPI.h>
-#include <MFRC522.h>
+#include <Adafruit_PN532.h>
 
 #include "config.h"
 #include "utils.h"
@@ -32,9 +33,11 @@ void setup() {
         isOnline = (boolean) false;
     }
 
-    //Init
+    //Init reader
     SPI.begin();
-    mfrc522.PCD_Init();
+    pn532.begin();
+    pn532.SAMConfig();
+
     //System ready!
     if (isOnline) {
         Serial.println("System online.");
@@ -59,60 +62,59 @@ void loop() {
     }
 
     if (setupModeStatus) {
-        if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
-            return;
-        }
-
-
-        String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
-                                                                &(mfrc522.uid),
-                                                                (MFRC522::MIFARE_Key *) &key2,
-                                                                sectorB, block);
-        String firstID = dataToSend.substring(0,6);
-
-        //DEBUG
-        //Serial.println(dataToSend.c_str());
-
-        if (firstID == masterID) {
-            mfrc522.PICC_HaltA();
-            mfrc522.PCD_StopCrypto1();
-            mfrc522.PCD_AntennaOff();
-            setupModeStage2();
-            apmode = (boolean) true;
-            return;
-        }
-        mfrc522.PICC_HaltA();
-        mfrc522.PCD_StopCrypto1();
-    }
-
-    if (isOnline) {
-        if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
-            return;
-        }
-
-        String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
-                                                                &(mfrc522.uid),
-                                                                (MFRC522::MIFARE_Key *) &key2,
-                                                                sectorB, block);
-        String firstID = dataToSend.substring(0,6);
-
-        //DEBUG
-        //Serial.println(dataToSend.c_str());
-
-        if (dataToSend != "CARD ERROR") {
-            if (firstID == masterID){
-                Serial.println("********MasterID*************");
-                saveJsonConfig("wifi", "ssid", "");
-                Serial.println("*****Reboot in SetupMode*****");
-                delay(500);
-                ESP.reset();
-                return;
+        pn532.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+        if (uidLength == 4) {
+            if (pn532.mifareclassic_AuthenticateBlock(uid, uidLength, block, 0, key2)) {
+                Serial.println("Block has been authenticated");
+                uint8_t data[16];
+                if (pn532.mifareclassic_ReadDataBlock(block, data)) {
+                    Serial.println("Reading Block ");
+                    pn532.PrintHexChar(data, 16);
+                    String dataToSend = String((const char *) data);
+                    String firstID = dataToSend.substring(0,2);
+                    if (firstID == masterID) {
+                        setupModeStage2();
+                        apmode = (boolean) true;
+                        return;
+                    }
+                    delay(3000);
+                } else {
+                    Serial.println("Ooops ... unable to read the requested block.  Try another key?");
+                }
+            } else {
+                Serial.println("Ooops ... authentication failed: Try another key?");
             }
-            customurl(dataToSend);
-            delay(3000);
         }
-        // Halt PICC & Stop encryption on PCD
-        mfrc522.PICC_HaltA();
-        mfrc522.PCD_StopCrypto1();
+
+    }
+    if (isOnline) {
+        pn532.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+        if (uidLength == 4) {
+            if (pn532.mifareclassic_AuthenticateBlock(uid, uidLength, block, 0, key2)) {
+                Serial.println("Block has been authenticated");
+                uint8_t data[16];
+                if (pn532.mifareclassic_ReadDataBlock(block, data)) {
+                    Serial.println("Reading Block ");
+                    pn532.PrintHexChar(data, 16);
+                    String dataToSend = String((const char *) data);
+                    String firstID = dataToSend.substring(0,2);
+                    if (firstID == masterID) {
+                        Serial.println("********MasterID*************");
+                        saveJsonConfig("wifi", "ssid", "");
+                        Serial.println("*****Reboot in SetupMode*****");
+                        delay(500);
+                        ESP.reset();
+                        return;
+                    }
+                    customurl(dataToSend);
+                    delay(3000);
+                } else {
+                    Serial.println("Ooops ... unable to read the requested block.  Try another key?");
+                }
+            } else {
+                Serial.println("Ooops ... authentication failed: Try another key?");
+            }
+        }
+
     }
 }

@@ -21,7 +21,7 @@ RGB_LED2=   GPIO15      D8
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
-#include <MFRC522.h>
+#include <Adafruit_PN532.h>
 #include <ColorBlink.h>
 
 //Include key file
@@ -34,7 +34,7 @@ RGB_LED2=   GPIO15      D8
 #define RGB_PIN2 15
 
 //Global objects
-MFRC522 mfrc522(SS_PIN, RST_PIN);
+Adafruit_PN532 pn532(SS_PIN);
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, RGB_PIN1, NEO_GRB + NEO_KHZ800);
 ColorBlink blinkLed = ColorBlink();
 ESP8266WebServer WEB_SERVER(80);
@@ -51,18 +51,17 @@ String CHIP_ID = String(ESP.getChipId());
 String DEVICE_TITLE = "gallNFC";
 String AP_SSID = "**" + DEVICE_TITLE + "-" + CHIP_ID + "**";
 String SSID_LIST;
-String masterID = " 44 4f";
+String masterID = "DO";
+uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
+uint8_t uidLength;
 
 //card configuration
-MFRC522::MIFARE_Key keyA;
 byte sectorA = 9;
 byte trailerBlockA = 39;
 
-MFRC522::MIFARE_Key keyB;
 byte sectorB = 10;
 byte trailerBlockB = 43;
 
-MFRC522::MIFARE_Key keyC;
 byte sectorC = 11;
 byte trailerBlockC = 47;
 byte sectorD = 12;
