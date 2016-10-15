@@ -1,0 +1,6 @@
+[submodule "lib/MFRC522"]
+	path = lib/MFRC522
+	url = https://github.com/miguelbalboa/rfid.git
+[submodule "lib/Adafruit-PN532"]
+	path = lib/Adafruit-PN532
+	url = https://github.com/adafruit/Adafruit-PN532.git
