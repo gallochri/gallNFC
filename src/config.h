@@ -36,6 +36,7 @@ RGB_LED2=   GPIO15      D8
 //Global objects
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, RGB_PIN1, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel statusLed = Adafruit_NeoPixel(1,RGB_PIN2, NEO_GRB + NEO_KHZ800);
 ColorBlink blinkLed = ColorBlink();
 ESP8266WebServer WEB_SERVER(80);
 DNSServer DNS_SERVER;

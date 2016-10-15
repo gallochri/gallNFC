@@ -9,6 +9,10 @@
 #include "setupmode.h"
 
 void setup() {
+    //Init status LED to BLU on boot
+    statusLed.begin();
+    statusLed.setPixelColor(0, statusLed.Color(0,0,125));
+    statusLed.show();
     //Set WiFi to station mode
     WiFi.mode(WIFI_STA);
     //Init Serial port
@@ -25,9 +29,13 @@ void setup() {
     if (!loadWiFiSavedConfig()) {
         Serial.println("WARNING: WiFi configuration not found");
         blinkLed.red(&led, 50, 3);
+        statusLed.setPixelColor(0, statusLed.Color(125,0,0));
+        statusLed.show();
         isOnline = (boolean) false;
     } else if (!checkWiFiConnection()) {
         Serial.println("ERROR: Connection lost");
+        statusLed.setPixelColor(0, statusLed.Color(125,0,0));
+        statusLed.show();
         blinkLed.red(&led, 50, 3);
         isOnline = (boolean) false;
     }
@@ -37,9 +45,13 @@ void setup() {
     mfrc522.PCD_Init();
     //System ready!
     if (isOnline) {
+        statusLed.setPixelColor(0, statusLed.Color(0,125,0));
+        statusLed.show();
         Serial.println("System online.");
         Serial.println("Ready to scan:");
     } else {
+        statusLed.setPixelColor(0, statusLed.Color(125,0,0));
+        statusLed.show();
         Serial.println("System offline.");
         setupModeStage1();
     }
@@ -56,7 +68,8 @@ void loop() {
     if (apmode) {
         DNS_SERVER.processNextRequest();
         WEB_SERVER.handleClient();
-        blinkLed.violet(&led, 0, 10);
+        statusLed.setPixelColor(0, statusLed.Color(204,0,102));
+        statusLed.show();
         if ((millis() - startTime) > TIMEOUT) {
             Serial.println("Set up mode timed out.");
             delay(1000);
