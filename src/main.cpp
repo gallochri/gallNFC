@@ -43,6 +43,13 @@ void setup() {
         Serial.println("System offline.");
         setupModeStage1();
     }
+    //DEBUG
+    //mfrc522.PCD_DumpVersionToSerial();
+    //byte gain = mfrc522.PCD_GetAntennaGain();
+    //Serial.println(gain,HEX);
+    mfrc522.PCD_SetAntennaGain(mfrc522.RxGain_max);
+    //gain = mfrc522.PCD_GetAntennaGain();
+    //Serial.println(gain,HEX);
 }
 
 void loop() {
