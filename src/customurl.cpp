@@ -2,7 +2,6 @@
 
 boolean customurl(String blockData) {
     Serial.println("Custom URL called");
-//    mfrc522.PCD_AntennaOff();
 
     String custom_host = loadJsonParam("custom", "host");
     String custom_url = loadJsonParam("custom", "url");
@@ -13,7 +12,6 @@ boolean customurl(String blockData) {
     // Make sure we can connect
     if (!client.connect(custom_host.c_str(), 80)) {
         Serial.println("ERROR: Can't connect to host!");
-//        mfrc522.PCD_AntennaOn();
         return (boolean) false;
     }
 
@@ -27,7 +25,6 @@ boolean customurl(String blockData) {
            "\",\"blockData\":\"" + blockData + "\"}";
 
     Serial.println("======= Custom URL =======");
-
     String strPayload;
     strPayload += "POST " + custom_url + " HTTP/1.1\r\n";
     strPayload += "Host: " + custom_host + "\r\n";
@@ -50,7 +47,6 @@ boolean customurl(String blockData) {
 
     blinkLed.violet(&led, 200, 3);
     Serial.println("\nCustom URL request sent. Goodbye");
-//    mfrc522.PCD_AntennaOn();
     return (boolean) true;
 }
 
