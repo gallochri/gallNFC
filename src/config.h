@@ -18,6 +18,7 @@ RGB_LED2=   GPIO15      D8
 #define CONFIG_H
 
 #include <Arduino.h>
+#include <Wire.h>
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>

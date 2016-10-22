@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Wire.h>
 #include <ESP8266WiFi.h>
 #include <FS.h>
 #include <SPI.h>
