@@ -18,6 +18,7 @@ RGB_LED2=   GPIO15      D8
 #define CONFIG_H
 
 #include <Arduino.h>
+#include <Wire.h>
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
@@ -36,6 +37,7 @@ RGB_LED2=   GPIO15      D8
 //Global objects
 Adafruit_PN532 pn532(SS_PIN);
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, RGB_PIN1, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel statusLed = Adafruit_NeoPixel(1,RGB_PIN2, NEO_GRB + NEO_KHZ800);
 ColorBlink blinkLed = ColorBlink();
 ESP8266WebServer WEB_SERVER(80);
 DNSServer DNS_SERVER;
