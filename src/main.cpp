@@ -34,8 +34,17 @@ void setup() {
     }
 
     //Init reader
-    SPI.begin();
+    //SPI.begin();
     pn532.begin();
+    uint32_t versiondata = pn532.getFirmwareVersion();
+    if (! versiondata) {
+        Serial.print("Didn't find PN53x board");
+        while (1); // halt
+    }
+    // Got ok data, print it out!
+    Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX);
+    Serial.print("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC);
+    Serial.print('.'); Serial.println((versiondata>>8) & 0xFF, DEC);
     pn532.SAMConfig();
 
     //System ready!
