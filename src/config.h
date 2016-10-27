@@ -44,9 +44,9 @@ DNSServer DNS_SERVER;
 //Global vars
 unsigned long startTime;
 #define TIMEOUT (240*1000)  //Setupmode timeout in milliseconds
-boolean setupModeStatus = false;
-boolean isOnline = true;
-boolean apmode = false;
+boolean setupModeStatus = (boolean) false;
+boolean isOnline = (boolean) true;
+boolean apmode = (boolean) false;
 IPAddress AP_IP(192, 168, 5, 1);
 String CHIP_ID = String(ESP.getChipId());
 String DEVICE_TITLE = "gallNFC";
@@ -55,15 +55,12 @@ String SSID_LIST;
 String masterID = " 44 4f";
 
 //card configuration
-MFRC522::MIFARE_Key keyA;
 byte sectorA = 9;
 byte trailerBlockA = 39;
 
-MFRC522::MIFARE_Key keyB;
 byte sectorB = 10;
 byte trailerBlockB = 43;
 
-MFRC522::MIFARE_Key keyC;
 byte sectorC = 11;
 byte trailerBlockC = 47;
 byte sectorD = 12;

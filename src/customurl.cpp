@@ -25,10 +25,8 @@ boolean customurl(String blockData) {
     data = "{\"macaddress\":\"" + vMac +
            "\",\"ssid\":\"" + vSid +
            "\",\"blockData\":\"" + blockData + "\"}";
-
-    Serial.println("======= Custom URL =======");
-
     String strPayload;
+    Serial.println("======= Custom URL =======");
     strPayload += "POST " + custom_url + " HTTP/1.1\r\n";
     strPayload += "Host: " + custom_host + "\r\n";
     strPayload += "User-Agent: Arduino/1.0\r\n";
@@ -36,10 +34,9 @@ boolean customurl(String blockData) {
     strPayload += "Content-Type: application/json\r\n";
     strPayload += "Content-Length:" + String(data.length()) + "\r\n\r\n";
     strPayload += data + "\r\n\r\n";
-
     client.println(strPayload);
     Serial.println(strPayload);
-
+    Serial.println("======= Custom URL =======");
     // Wait for a response
     while (client.connected()) {
         if (client.available()) {

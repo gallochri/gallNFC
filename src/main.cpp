@@ -11,7 +11,7 @@
 void setup() {
     //Init status LED to BLU on boot
     statusLed.begin();
-    statusLed.setPixelColor(0, statusLed.Color(0,0,125));
+    statusLed.setPixelColor(0, statusLed.Color(0,0,70));
     statusLed.show();
     //Set WiFi to station mode
     WiFi.mode(WIFI_STA);
@@ -45,7 +45,7 @@ void setup() {
     mfrc522.PCD_Init();
     //System ready!
     if (isOnline) {
-        statusLed.setPixelColor(0, statusLed.Color(0,125,0));
+        statusLed.setPixelColor(0, statusLed.Color(0,70,0));
         statusLed.show();
         Serial.println("System online.");
         Serial.println("Ready to scan:");
