@@ -1,6 +1,6 @@
 /*
 Wiring the MFRC522 to ESP8266
-            ESP12-e     Wemos-D1 mini
+            ESP12-e     Wemos D1 mini PRO
 
 GND     =   GND         GND
 RST     =   GPIO5       D1
@@ -33,6 +33,10 @@ RGB_LED2=   GPIO15      D8
 #define RGB_PIN1 4
 #define RGB_PIN2 15
 
+//TODO add vars for debug on serial
+//Uncomment these lines to enable specific debug
+//#define
+
 //Global objects
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 Adafruit_NeoPixel led = Adafruit_NeoPixel(1, RGB_PIN1, NEO_GRB + NEO_KHZ800);
@@ -41,32 +45,33 @@ ColorBlink blinkLed = ColorBlink();
 ESP8266WebServer WEB_SERVER(80);
 DNSServer DNS_SERVER;
 
-//Global vars
-unsigned long startTime;
-#define TIMEOUT (240*1000)  //Setupmode timeout in milliseconds
-boolean setupModeStatus = (boolean) false;
-boolean isOnline = (boolean) true;
-boolean apmode = (boolean) false;
-IPAddress AP_IP(192, 168, 5, 1);
-String CHIP_ID = String(ESP.getChipId());
-String DEVICE_TITLE = "gallNFC";
-String AP_SSID = "**" + DEVICE_TITLE + "-" + CHIP_ID + "**";
-String SSID_LIST;
-String masterID = " 44 4f";
+//Mode vars
+boolean apmode = (boolean) false;                               //True if access point is on
+boolean isOnline = (boolean) true;                              //True if successful connection
+boolean setupModeStatus = (boolean) false;                      //True when waiting master cardID
+unsigned long startTime;                                        //Access point startup time
+#define TIMEOUT (240*1000)                                      //Access point timeout
+IPAddress AP_IP(192, 168, 5, 1);                                //Access point IP address
+String CHIP_ID = String(ESP.getChipId());                       //Chip ID
+String DEVICE_TITLE = "gallNFC";                                //Brand
+String AP_SSID = "**" + DEVICE_TITLE + "-" + CHIP_ID + "**";    //Access point SSID
+String SSID_LIST;                                               //String to store scanned SSID
 
-//card configuration
-byte sectorA = 9;
-byte trailerBlockA = 39;
+//Card vars
+String masterID = " 44 4f";                                     //Master config card ID
 
-byte sectorB = 10;
-byte trailerBlockB = 43;
+byte sectorA = 9;                                               //First data block
+byte trailerBlockA = 39;                                        //access with key1
 
-byte sectorC = 11;
-byte trailerBlockC = 47;
-byte sectorD = 12;
-byte trailerBlockD = 51;
+byte sectorB = 10;                                              //Second data block
+byte trailerBlockB = 43;                                        //access with key2
 
-//Block to send
-byte block = 40;
+byte sectorC = 11;                                              //Third data block
+byte trailerBlockC = 47;                                        //access with key3
+
+byte sectorD = 12;                                              //Fourth data block
+byte trailerBlockD = 51;                                        //access with key3
+
+byte block = 40;                                                //Block containing the data that will be transmitted
 
 #endif //CONFIG_H
