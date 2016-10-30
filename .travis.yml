@@ -8,6 +8,7 @@ install:
 - pip install -U setuptools pip
 - pip install -U platformio
 - platformio platforms install espressif8266 --with-package tool-mkspiffs
+- cp src/keys.template src/keys.h
 script:
 - platformio run -e esp12e
 - ~/.platformio/packages/tool-mkspiffs/mkspiffs -c data -p 256 -b 8192 -s 1028096 .pioenvs/esp12e/spiffs.bin
