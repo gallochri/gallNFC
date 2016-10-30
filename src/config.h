@@ -34,8 +34,8 @@ RGB_LED2=   GPIO15      D8
 #define RGB_PIN2 15
 
 //TODO add vars for debug on serial
-//Uncomment these lines to enable specific debug
-//#define
+//Uncomment to enable serial print
+#define DEBUGPRINT Serial
 
 //Global objects
 MFRC522 mfrc522(SS_PIN, RST_PIN);

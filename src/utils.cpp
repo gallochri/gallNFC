@@ -7,10 +7,8 @@ boolean loadWiFiSavedConfig() {
     }
     String password = loadJsonParam("wifi", "password");
     if (WiFi.begin(ssid.c_str(), password.c_str())) {
-        Serial.print("SSID: ");
-        Serial.println(ssid);
-        Serial.print("Password: ");
-        Serial.println(password);
+        Serial.println("SSID: " + ssid);
+        Serial.println("Password: " + password);
         return (boolean) true;
     }
     return (boolean) false;
