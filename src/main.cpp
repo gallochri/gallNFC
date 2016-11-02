@@ -23,44 +23,35 @@ void setup() {
     blinkLed.blue(&led, 50, 3);
 #ifdef DEBUGPRINT
     DEBUGPRINT.begin(115200);
-    //Uncomment for debug features
-//    printKeys(key1,key2,key3);
-//    debugSPIFFS();
+    //printKeys(key1,key2,key3);            //Print keys
+    //debugSPIFFS();                        //Print SPIFFS files tree
 #endif
     if (!loadWiFiSavedConfig()) {
-        DEBUGPRINT.println("WARNING: WiFi configuration not found");
         blinkLed.red(&led, 50, 3);
         statusLed.setPixelColor(0, statusLed.Color(125,0,0));
         statusLed.show();
         isOnline = (boolean) false;
     } else if (!checkWiFiConnection()) {
-        DEBUGPRINT.println("ERROR: Connection lost");
         statusLed.setPixelColor(0, statusLed.Color(125,0,0));
         statusLed.show();
         blinkLed.red(&led, 50, 3);
         isOnline = (boolean) false;
     }
-    //Init
     SPI.begin();
     mfrc522.PCD_Init();
+    //DEBUG
+    //mfrc522.PCD_DumpVersionToSerial();
+    mfrc522.PCD_SetAntennaGain(mfrc522.RxGain_max);
     if (isOnline) {
         statusLed.setPixelColor(0, statusLed.Color(0,70,0));
         statusLed.show();
         DEBUGPRINT.println("System online.");
-        DEBUGPRINT.println("Ready to scan:");
     } else {
         statusLed.setPixelColor(0, statusLed.Color(125,0,0));
         statusLed.show();
         DEBUGPRINT.println("System offline.");
         setupModeStage1();
     }
-    //DEBUG
-    //mfrc522.PCD_DumpVersionToSerial();
-    //byte gain = mfrc522.PCD_GetAntennaGain();
-    //Serial.println(gain,HEX);
-    mfrc522.PCD_SetAntennaGain(mfrc522.RxGain_max);
-    //gain = mfrc522.PCD_GetAntennaGain();
-    //Serial.println(gain,HEX);
 }
 
 void loop() {
@@ -69,9 +60,8 @@ void loop() {
         WEB_SERVER.handleClient();
         statusLed.setPixelColor(0, statusLed.Color(204,0,102));
         statusLed.show();
+        //Restart ESP after timeout
         if ((millis() - startTime) > TIMEOUT) {
-            DEBUGPRINT.println("Set up mode timed out.");
-            delay(1000);
             ESP.restart();
         }
         return;
@@ -81,7 +71,6 @@ void loop() {
         if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
             return;
         }
-
 
         String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
                                                                 &(mfrc522.uid),

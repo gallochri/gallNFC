@@ -3,6 +3,7 @@
 boolean loadWiFiSavedConfig() {
     String ssid = loadJsonParam("wifi", "ssid");
     if (ssid == "") {
+        Serial.println("WARNING: WiFi configuration not found");
         return (boolean) false;
     }
     String password = loadJsonParam("wifi", "password");
@@ -11,6 +12,7 @@ boolean loadWiFiSavedConfig() {
         Serial.println("Password: " + password);
         return (boolean) true;
     }
+    Serial.println("WARNING: WiFi configuration not found");
     return (boolean) false;
 }
 
@@ -32,6 +34,7 @@ boolean checkWiFiConnection() {
     }
     Serial.println("Timed out.");
     blinkLed.red(&led, 100, 3);
+    Serial.println("ERROR: Connection lost");
     return (boolean) false;
 }
 
@@ -207,36 +210,12 @@ boolean saveJsonConfig(const char *service, const char *param, boolean status) {
     return (boolean) true;
 }
 
-void debugSPIFFS() {
-    Dir dir = SPIFFS.openDir("/");
-    while (dir.next()) {
-        String fileName = dir.fileName();
-        Serial.printf("FS File: %s\n", fileName.c_str());
-    }
-}
-
-
 // Helper routine to dump a byte array as hex values to Serial
 void dump_byte_array(byte *buffer, byte bufferSize) {
     for (byte i = 0; i < bufferSize; i++) {
         Serial.print(buffer[i] < 0x10 ? " 0" : " ");
         Serial.print(buffer[i], HEX);
     }
-}
-
-//Debug function to print keys values
-void printKeys(byte key1[MFRC522::MF_KEY_SIZE],
-               byte key2[MFRC522::MF_KEY_SIZE],
-               byte key3[MFRC522::MF_KEY_SIZE]) {
-    Serial.print("Key1 value:");
-    dump_byte_array(key1, MFRC522::MF_KEY_SIZE);
-    Serial.println();
-    Serial.print("Key2 value:");
-    dump_byte_array(key2, MFRC522::MF_KEY_SIZE);
-    Serial.println();
-    Serial.print("Key3 value:");
-    dump_byte_array(key3, MFRC522::MF_KEY_SIZE);
-    Serial.println();
 }
 
 void PICC_DumpMifareClassicBlockToSerial(MFRC522 mfrc522,MFRC522::Uid *uid, MFRC522::MIFARE_Key *key, byte sector, byte block){
@@ -447,4 +426,28 @@ void PICCdetails(){
     mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), (MFRC522::MIFARE_Key *) &key3, sectorD);
     Serial.println();
 
+}
+
+//Debug function to print keys values
+void printKeys(byte key1[MFRC522::MF_KEY_SIZE],
+               byte key2[MFRC522::MF_KEY_SIZE],
+               byte key3[MFRC522::MF_KEY_SIZE]) {
+    Serial.print("Key1 value:");
+    dump_byte_array(key1, MFRC522::MF_KEY_SIZE);
+    Serial.println();
+    Serial.print("Key2 value:");
+    dump_byte_array(key2, MFRC522::MF_KEY_SIZE);
+    Serial.println();
+    Serial.print("Key3 value:");
+    dump_byte_array(key3, MFRC522::MF_KEY_SIZE);
+    Serial.println();
+}
+
+//Debug function to print spiffs files tree
+void debugSPIFFS() {
+    Dir dir = SPIFFS.openDir("/");
+    while (dir.next()) {
+        String fileName = dir.fileName();
+        Serial.printf("FS File: %s\n", fileName.c_str());
+    }
 }

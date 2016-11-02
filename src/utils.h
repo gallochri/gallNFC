@@ -44,16 +44,8 @@ const char *loadJsonParam(const char *service, const char *param);
 boolean saveJsonConfig(const char *service, const char *param, const char *config);
 boolean saveJsonConfig(const char *service, const char *param, boolean status);
 
-//DEBUG Print SPIFFS content to serial
-void debugSPIFFS();
-
 //DEBUG Helper routine to dump a byte array as hex values to Serial
 void dump_byte_array(byte *buffer, byte bufferSize);
-
-//DEBUG Print keys to serial
-void printKeys(byte key1[MFRC522::MF_KEY_SIZE],
-               byte key2[MFRC522::MF_KEY_SIZE],
-               byte key3[MFRC522::MF_KEY_SIZE]);
 
 void PICC_DumpMifareClassicBlockToSerial(MFRC522 mfrc522,
                                          MFRC522::Uid *uid,
@@ -68,5 +60,15 @@ String PICC_DumpMifareClassicBlockToString(MFRC522 mfrc522,
 
 //DEBUG Show some details of the PICC (that is: the tag/card)
 void PICCdetails();
+
+//DEBUG Functions//
+
+//Print keys
+void printKeys(byte key1[MFRC522::MF_KEY_SIZE],
+               byte key2[MFRC522::MF_KEY_SIZE],
+               byte key3[MFRC522::MF_KEY_SIZE]);
+
+//DEBUG Print SPIFFS content to serial
+void debugSPIFFS();
 
 #endif //UTILS_H
