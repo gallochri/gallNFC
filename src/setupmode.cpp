@@ -49,7 +49,6 @@ void setupModeStage2() {
     WEB_SERVER.begin();
     MDNS.addService("http", "tcp", 80);
     startTime = millis();
-    setupModeStatus = (boolean) false;
     Serial.println("Setup mode stage 2 terminated");
     Serial.println("Waiting client for configure.");
 }

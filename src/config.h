@@ -33,7 +33,6 @@ RGB_LED2=   GPIO15      D8
 #define RGB_PIN1 4
 #define RGB_PIN2 15
 
-//TODO add vars for debug on serial
 //Uncomment to enable serial print
 #define DEBUGPRINT Serial
 

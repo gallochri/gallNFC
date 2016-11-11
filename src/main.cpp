@@ -9,7 +9,7 @@
 #include "setupmode.h"
 
 void setup() {
-    //Init status LED to BLU on boot
+    //Init status LED to blue on boot
     statusLed.begin();
     statusLed.setPixelColor(0, statusLed.Color(0,0,70));
     statusLed.show();
@@ -26,6 +26,7 @@ void setup() {
     //printKeys(key1,key2,key3);            //Print keys
     //debugSPIFFS();                        //Print SPIFFS files tree
 #endif
+    //Try to load saved wifi config and to connect to wifi
     if (!loadWiFiSavedConfig()) {
         blinkLed.red(&led, 50, 3);
         statusLed.setPixelColor(0, statusLed.Color(125,0,0));
@@ -37,11 +38,14 @@ void setup() {
         blinkLed.red(&led, 50, 3);
         isOnline = (boolean) false;
     }
+    //Init SPI and MFRC522
     SPI.begin();
     mfrc522.PCD_Init();
     //DEBUG
-    //mfrc522.PCD_DumpVersionToSerial();
+    //mfrc522.PCD_DumpVersionToSerial();    //Print RC522 firmware version
+    //Set antenna gain to max value
     mfrc522.PCD_SetAntennaGain(mfrc522.RxGain_max);
+    //Set LED status to green if we are online or scan networks and waiting for mastercard with LED status on red.
     if (isOnline) {
         statusLed.setPixelColor(0, statusLed.Color(0,70,0));
         statusLed.show();
@@ -55,6 +59,7 @@ void setup() {
 }
 
 void loop() {
+    //Device in apmode, web server started and status led to violet
     if (apmode) {
         DNS_SERVER.processNextRequest();
         WEB_SERVER.handleClient();
@@ -66,16 +71,17 @@ void loop() {
         }
         return;
     }
-
+    //Device is waiting for mastercard
     if (setupModeStatus) {
         if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
             return;
         }
-
+        //Read data
         String dataToSend = PICC_DumpMifareClassicBlockToString(mfrc522,
                                                                 &(mfrc522.uid),
                                                                 (MFRC522::MIFARE_Key *) &key2,
                                                                 sectorB, block);
+        //Extract substring from data
         String firstID = dataToSend.substring(0,6);
 
         //DEBUG
@@ -86,13 +92,15 @@ void loop() {
             mfrc522.PCD_StopCrypto1();
             mfrc522.PCD_AntennaOff();
             setupModeStage2();
+            setupModeStatus = (boolean) false;
             apmode = (boolean) true;
             return;
         }
+        // Halt PICC & Stop encryption on PCD
         mfrc522.PICC_HaltA();
         mfrc522.PCD_StopCrypto1();
     }
-
+    //Device is ready to operate
     if (isOnline) {
         if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
             return;
@@ -107,6 +115,7 @@ void loop() {
         //DEBUG
         //Serial.println(dataToSend.c_str());
 
+        //If a mastercard is present, delete wifi config and reboot in setup mode
         if (dataToSend != "CARD ERROR") {
             if (firstID == masterID){
                 saveJsonConfig("wifi", "ssid", "");
