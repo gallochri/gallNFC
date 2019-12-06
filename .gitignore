@@ -8,3 +8,5 @@ CMakeListsPrivate.txt
 src/keys.h
 examples/.directory
 cmake-build-debug/
+.pio
+
